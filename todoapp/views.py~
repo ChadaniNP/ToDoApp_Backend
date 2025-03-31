@@ -10,7 +10,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from todoapp.serializers import UserSerializer
-from .models import Todo
 from .serializers import TodoSerializer
 
 class RegisterView(generics.CreateAPIView):
@@ -35,7 +34,6 @@ class LogoutView(APIView):
 # Create Todo
 class TodoCreateView(generics.CreateAPIView):
     serializer_class = TodoSerializer
-    queryset = Todo.objects.all()
     permission_classes = [IsAuthenticated]  # Ensure the user is authenticated
 
     def perform_create(self, serializer):

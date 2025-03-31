@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from .models import Todo
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,3 +21,9 @@ class UserSerializer(serializers.ModelSerializer):
 
         print(f"✅ Debug: Hashed password stored: {user.password}")  # Should start with pbkdf2_sha256$
         return user
+
+
+class TodoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Todo
+        fields = ['id', 'title', 'description', 'completed', 'created_at']
