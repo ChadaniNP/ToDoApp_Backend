@@ -16,14 +16,15 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class = UserSerializer
 
+
 class LoginView(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         response = super(LoginView, self).post(request, *args, **kwargs)
         token = Token.objects.get(key=response.data['token'])
         return Response({'token': token.key, 'user_id': token.user_id})
 
-class LogoutView(generics.GenericAPIView):
-    permission_classes = (IsAuthenticated,)
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         request.user.auth_token.delete()
