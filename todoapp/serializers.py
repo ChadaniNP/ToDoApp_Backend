@@ -5,7 +5,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'password']
-        extra_kwargs = {'password': {'write_only': True}}  # Ensure password is not exposed
+        extra_kwargs = {'password': {'write_only': False}}  # Ensure password is not exposed
 
     def create(self, validated_data):
         raw_password = validated_data['password']  # Get raw password
