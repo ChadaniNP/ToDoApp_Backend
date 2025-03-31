@@ -1,5 +1,5 @@
 from django.urls import path
-from todoapp.views import RegisterView, LoginView, LogoutView, TodoCreateView, TodoUpdateView, TodoListView, TodoDeleteView
+from todoapp.views import RegisterView, LoginView, LogoutView, TodoCreateView, TodoUpdateView, TodoListView
 
 urlpatterns =[
     path('register/', RegisterView.as_view(), name='register'),
