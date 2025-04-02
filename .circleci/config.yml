@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   test:
     docker:
-      - image: circleci/python:3.9
+      - image: circleci/python:3.11  # Use Python 3.11
     steps:
       - checkout
       - run:
@@ -13,8 +13,7 @@ jobs:
             pip install -r requirements.txt
       - run:
           name: Run tests
-          command: |
-            pytest  # Or the test command for your framework
+          command: pytest
 
 workflows:
   version: 2
