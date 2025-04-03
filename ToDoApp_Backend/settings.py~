@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+import DATABASES
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-9xu3b+&$gkch$mb&&!^6rp3e#^bv7luc*q(xrh8@9^9tkqsk#d'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -79,23 +81,40 @@ WSGI_APPLICATION = 'ToDoApp_Backend.wsgi.app'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+import sys
+
+if "test" in sys.argv or "pytest" in sys.argv:
+    DATABASES["default"] = {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "test_neondb",
+        "USER": "neondb_owner",
+        "PASSWORD": "npg_uQJWTnfah38E",
+        "HOST": "ep-yellow-shape-a7te07dh-pooler.ap-southeast-2.aws.neon.tech",
+        "PORT": "5432",
+        "TEST": {
+            "NAME": "test_neondb",
+        },
+    }
+
+#
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'neondb',
+#         'USER': 'neondb_owner',
+#         'PASSWORD': 'npg_uQJWTnfah38E',
+#         'HOST': 'ep-yellow-shape-a7te07dh-pooler.ap-southeast-2.aws.neon.tech',
+#         'PORT': '5432',
 #     }
 # }
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'neondb',
-        'USER': 'neondb_owner',
-        'PASSWORD': 'npg_uQJWTnfah38E',
-        'HOST': 'ep-yellow-shape-a7te07dh-pooler.ap-southeast-2.aws.neon.tech',
-        'PORT': '5432',
-    }
-}
+# import sys
+#
+# # Use SQLite for tests
+# if 'test' in sys.argv:
+#     DATABASES['default'] = {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': ':memory:',
+#     }
 
 
 # Password validation

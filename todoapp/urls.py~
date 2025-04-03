@@ -1,5 +1,5 @@
 from django.urls import path
-from todoapp.views import RegisterView, LoginView, LogoutView, TodoCreateView, TodoUpdateView, TodoListView
+from todoapp.views import RegisterView, LoginView, LogoutView, TodoCreateView, TodoUpdateView, TodoListView, TodoDeleteView
 
 urlpatterns =[
     path('register/', RegisterView.as_view(), name='register'),
@@ -8,6 +8,6 @@ urlpatterns =[
     path('todos/', TodoListView.as_view(), name='todo-list'),
     path('todos/', TodoCreateView.as_view(), name='todo-create'),
     path('todos/<int:pk>/', TodoUpdateView.as_view(), name='todo-update'),
-    # path('todos/<int:pk>/delete/', TodoDeleteView.as_view(), name='todo-delete'),  # Delete a todo
+    path('todos/<int:pk>/delete/', TodoDeleteView.as_view(), name='todo-delete'),  # Delete a todo
 
 ]
