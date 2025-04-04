@@ -22,16 +22,15 @@ class UserAuthTests(TestCase):
         self.client.login(username='testuser', password='testpassword')
 
     def test_user_registration(self):
-        url = '/api/register/'  # Adjust URL according to the app's routing
+        url = '/api/register/'
         data = {
-            'email': 'testuser@example.com',  # Ensure this field is included
-            'password': 'password123',
-            # Include any other required fields for registration
+            'username': 'testmyuser',
+            'password': 'testpass@123',
+            'email': 'testuser@example.com'  # If required
         }
         response = self.client.post(url, data, format='json')
-
-        # Further assertions can be added to verify successful registration
-        self.assertEqual(response.status_code, 201)  # For created
+        self.assertEqual(response.status_code, 201)
+        print("Response data:", response.data)  # 👈 Add this line
 
     def test_user_login(self):
         """Test login and receiving a token"""

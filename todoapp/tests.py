@@ -24,11 +24,12 @@ class UserAuthTests(TestCase):
     def test_user_registration(self):
         url = '/api/register/'
         data = {
-            'username': 'testuser',
-            'password': 'testpass123',
+            'username': 'testmyuser',
+            'password': 'testpass@123',
             'email': 'testuser@example.com'  # If required
         }
         response = self.client.post(url, data, format='json')
+        print("Response data:", response.data)  # 👈 Add this line
         self.assertEqual(response.status_code, 201)
 
     def test_user_login(self):
