@@ -1,8 +1,12 @@
 from django.test import TestCase
 from rest_framework import status
-from rest_framework.test import APIClient
+from rest_framework.test import APIClient, APITestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
+from rest_framework.test import APITestCase
+from rest_framework import status
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 from .models import Todo
 
 
@@ -40,12 +44,25 @@ class UserAuthTests(TestCase):
         self.assertIn('token', response.data)
         self.assertIn('user_id', response.data)
 
-    def test_user_logout(self):
-        """Test user logout by deleting the token"""
-        url = reverse('logout')  # Adjust URL name if needed
-        response = self.client.post(url, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    class UserAuthTests(APITestCase):
 
+        def setUp(self):
+            # Create a user for testing
+            self.user = User.objects.create_user(username='testuser', password='testpassword')
+            self.token = Token.objects.create(user=self.user)  # Generate an authentication token
+
+        def test_user_logout(self):
+            # Prepare the logout request with the Authorization header
+            self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)  # Attach token to request
+
+            response = self.client.post('/api/logout/')  # Assuming this is your logout endpoint
+
+            # Assert that the status code returned is 200 OK
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+            # Optionally, check if the token is deleted (you can query for the token to ensure it's gone)
+            with self.assertRaises(Token.DoesNotExist):
+                Token.objects.get(key=self.token.key)
     def test_user_login_invalid(self):
         """Test login with invalid credentials"""
         url = reverse('login')
