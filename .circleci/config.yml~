@@ -1,23 +1,72 @@
 version: 2.1
 
-jobs:
-  test:
+executors:
+  python-executor:
     docker:
-      - image: cimg/python:3.11
-      # Use Python 3.11
+      - image: circleci/python:3.9
+    working_directory: ~/repo
+
+jobs:
+  install_dependencies:
+    executor: python-executor
     steps:
       - checkout
       - run:
-          name: Install dependencies
+          name: Install system dependencies
           command: |
-            python -m pip install --upgrade pip
+            sudo apt-get update
+            sudo apt-get install -y libpq-dev  # For PostgreSQL or your DB of choice
+      - run:
+          name: Install Python dependencies
+          command: |
+            python -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt  # Install dependencies from requirements.txt
+
+  run_tests:
+    executor: python-executor
+    steps:
+      - checkout
+      - run:
+          name: Install system dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libpq-dev
+      - run:
+          name: Install Python dependencies
+          command: |
+            . venv/bin/activate
             pip install -r requirements.txt
       - run:
-          name: Run tests
-          command: pytest
+          name: Run Django tests
+          command: |
+            . venv/bin/activate
+            python manage.py test  # Run Django tests
 
+  deploy:
+    docker:
+      - image: circleci/python:3.9
+    steps:
+      - checkout
+      - run:
+          name: Install system dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libpq-dev
+      - run:
+          name: Install Python dependencies
+          command: |
+            . venv/bin/activate
+            pip install -r requirements.txt
+      
 workflows:
   version: 2
-  test_and_deploy:
+  build_and_deploy:
     jobs:
-      - test
+      - install_dependencies
+      - run_tests:
+          requires:
+            - install_dependencies
+      - deploy:
+          requires:
+            - run_tests

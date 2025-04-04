@@ -31,4 +31,4 @@ jobs:
 
       - name: Run Django tests
         run: DJANGO_TEST_ENV=True python manage.py test
-        working-directory: 
+        working-directory:
