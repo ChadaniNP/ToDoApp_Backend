@@ -1,72 +1,39 @@
 version: 2.1
 
+# Define reusable steps
 executors:
   python-executor:
     docker:
-      - image: circleci/python:3.9
-    working_directory: ~/repo
+      - image: circleci/python:3.9  # Use the Python Docker image (choose the version you need)
+    working_directory: ~/todoapp
 
+# Define the jobs
 jobs:
-  install_dependencies:
+  test:
     executor: python-executor
     steps:
-      - checkout
+      - checkout  # Checkout the code from the repository
       - run:
-          name: Install system dependencies
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y libpq-dev  # For PostgreSQL or your DB of choice
-      - run:
-          name: Install Python dependencies
+          name: Install dependencies
           command: |
             python -m venv venv
             . venv/bin/activate
-            pip install -r requirements.txt  # Install dependencies from requirements.txt
-
-  run_tests:
-    executor: python-executor
-    steps:
-      - checkout
+            pip install --upgrade pip
+            pip install -r requirements.txt  # Install the dependencies
       - run:
-          name: Install system dependencies
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y libpq-dev
-      - run:
-          name: Install Python dependencies
+          name: Run migrations
           command: |
             . venv/bin/activate
-            pip install -r requirements.txt
+            python manage.py migrate  # Run Django migrations
       - run:
-          name: Run Django tests
+          name: Run tests
           command: |
             . venv/bin/activate
             python manage.py test  # Run Django tests
 
-  deploy:
-    docker:
-      - image: circleci/python:3.9
-    steps:
-      - checkout
-      - run:
-          name: Install system dependencies
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y libpq-dev
-      - run:
-          name: Install Python dependencies
-          command: |
-            . venv/bin/activate
-            pip install -r requirements.txt
-
+# Define the workflows
 workflows:
   version: 2
-  build_and_deploy:
+  test:
     jobs:
-      - install_dependencies
-      - run_tests:
-          requires:
-            - install_dependencies
-      - deploy:
-          requires:
-            - run_tests
+      - test  # Run the test job
