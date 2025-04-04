@@ -22,7 +22,7 @@ class UserAuthTests(TestCase):
         self.client.login(username='testuser', password='testpassword')
 
     def test_user_registration(self):
-        url = '/api/users/register/'  # Adjust URL according to the app's routing
+        url = '/api/register/'  # Adjust URL according to the app's routing
         data = {
             'email': 'testuser@example.com',  # Ensure this field is included
             'password': 'password123',
